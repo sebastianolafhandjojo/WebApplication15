@@ -22,12 +22,18 @@ namespace WebApplication15.Server
                 {
                     webBuilder.UseStartup<Startup>();
 
-                    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DYNO")))
-                    {                        
+
+                    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PORT")))
+                    {
                         string dynoport = Environment.GetEnvironmentVariable("PORT");
                         string useUrl = $"http://*:{dynoport}";
-                        webBuilder.UseUrls(useUrl);                        
+                        webBuilder.UseUrls(useUrl);
                     }
+                    else
+                    {
+                        Console.WriteLine("No PORT Env Var is found");
+                    }
+
                 });
     }
 }
