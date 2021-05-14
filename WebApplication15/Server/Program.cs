@@ -21,6 +21,13 @@ namespace WebApplication15.Server
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
+                    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DYNO")))
+                    {                        
+                        string dynoport = Environment.GetEnvironmentVariable("PORT");
+                        string useUrl = $"http://*:{dynoport}";
+                        webBuilder.UseUrls(useUrl);                        
+                    }
                 });
     }
 }
