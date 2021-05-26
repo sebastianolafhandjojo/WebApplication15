@@ -34,13 +34,51 @@ else
         </tbody>
     </table>
 }
+<hr />
+
+
+@if (envars == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var envar in envars)
+            {
+                <tr>
+                    <td>@envar.ID</td>
+                    <td>@envar.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
     private WeatherForecast[] forecasts;
+    private EnVar[] envars;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        try
+        {
+            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+
+            envars = await Http.GetFromJsonAsync<EnVar[]>("EnvironmentVariable");
+            
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
     }
 
 }
