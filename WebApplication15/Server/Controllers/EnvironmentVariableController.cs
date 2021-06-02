@@ -22,24 +22,34 @@ namespace WebApplication15.Server.Controllers
         [HttpGet]
         public IEnumerable<EnVar> Get()
         {
+
             List<EnVar> envars = new List<EnVar>();
-            envars.Add(new EnVar { ID = "Process", Value = Process.GetCurrentProcess().ProcessName });
-            
-            string localIpAddress = string.Empty;
+            if (!bool.TryParse(Environment.GetEnvironmentVariable("ISSHOWENVVAR"), out bool isshow)) { isshow = false; }
 
-            var dns = Dns.GetHostName();
-            var ips = Dns.GetHostAddressesAsync(dns).Result;                
-
-            foreach(IPAddress ip in ips)
+            if (isshow)
             {
-                envars.Add(new EnVar { ID = "IP", Value = ip.ToString() });
+                envars.Add(new EnVar { ID = "Process", Value = Process.GetCurrentProcess().ProcessName });
+
+                string localIpAddress = string.Empty;
+
+                var dns = Dns.GetHostName();
+                var ips = Dns.GetHostAddressesAsync(dns).Result;
+
+                foreach (IPAddress ip in ips)
+                {
+                    envars.Add(new EnVar { ID = "IP", Value = ip.ToString() });
+                }
+                envars.Add(new EnVar { ID = "DNS", Value = dns });
+
+                foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
+                {
+                    envars.Add(new EnVar() { ID = de.Key.ToString(), Value = de.Value.ToString() });
+                }
             }
-            envars.Add(new EnVar { ID = "DNS", Value = dns });
-
-            foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
+            else
             {
-                envars.Add(new EnVar() { ID = de.Key.ToString(), Value = de.Value.ToString() });
-            }            
+                envars.Add(new EnVar{ ID = "nil", Value = "nil" });
+            }
             return envars.ToArray();
         }
     }
