@@ -7,12 +7,12 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["WebApplication15/Server/WebApplication15.Server.csproj", "WebApplication15/Server/"]
-COPY ["WebApplication15/Shared/WebApplication15.Shared.csproj", "WebApplication15/Shared/"]
-COPY ["WebApplication15/Client/WebApplication15.Client.csproj", "WebApplication15/Client/"]
-RUN dotnet restore "WebApplication15/Server/WebApplication15.Server.csproj"
+COPY ["Server/WebApplication15.Server.csproj", "Server/"]
+COPY ["Shared/WebApplication15.Shared.csproj", "Shared/"]
+COPY ["Client/WebApplication15.Client.csproj", "Client/"]
+RUN dotnet restore "Server/WebApplication15.Server.csproj"
 COPY . .
-WORKDIR "/src/WebApplication15/Server"
+WORKDIR "/src/Server"
 RUN dotnet build "WebApplication15.Server.csproj" -c Release -o /app/build
 
 FROM build AS publish
